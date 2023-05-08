@@ -19,9 +19,6 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y python3-pip
           pip3 install -r requirements.txt
-      - name: Set environment variables
-          run: |
-            echo "$SECRETS" | jq -r 'to_entries[] | "export \(.key)=\(.value)"' >> $GITHUB_ENV
       - name: Test
         run: |
           python manage.py migrate
