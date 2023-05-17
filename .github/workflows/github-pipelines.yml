@@ -7,11 +7,12 @@ on:
   pull_request:
     branches:
       - main
-
+env:
+  # Setting an environment variable with the value of a configuration variable
+  DJANGO_SECRET_KEY: ${{ vars.DJANGO_SECRET_KEY }}
 jobs:
   install-and-test:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
