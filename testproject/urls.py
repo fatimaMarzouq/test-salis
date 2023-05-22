@@ -17,9 +17,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from testapp.views import sync_data_view
+from testapp.views import sync_data_view, test_odoo_api_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('test/', sync_data_view),
+    path('test-api/', test_odoo_api_view),
 ]
