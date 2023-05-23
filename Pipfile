@@ -27,6 +27,7 @@ tomli = "==2.0.1"
 tzdata = "==2023.3"
 virtualenv = "==20.15.1"
 virtualenv-clone = "==0.5.7"
+requests = "*"
 
 [dev-packages]
 

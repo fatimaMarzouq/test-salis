@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from testapp.models import OdooModel
+from testapp.odoo import authenticate_odoo_user
 from testproject.settings import odoo
 
 
@@ -89,3 +90,12 @@ def sync_data_view(request):
         except Exception as e:
             print(f"Failed to post the record: {e}")
     return HttpResponse("Data synchronized successfully!")
+
+
+def test_odoo_api_view(request):
+    odoo_url = "http://fatima4.odoo.com"
+    db_name = "fatima4"
+    username = "fatima@softylus.com"
+    password = "c69e2e6acc2e6ae990c71cbb1b9a4e7403b4087b"
+    uid = authenticate_odoo_user(odoo_url, db_name, username, password)
+    print(uid)
