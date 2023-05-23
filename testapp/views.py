@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from testapp.models import OdooModel
-from testapp.odoo import authenticate_odoo_user
+from testapp.odoo import authenticate_odoo_user, get_odoo_version, execute_odoo_method
 from testproject.settings import odoo
 
 
@@ -97,5 +97,18 @@ def test_odoo_api_view(request):
     db_name = "fatima4"
     username = "fatima@softylus.com"
     password = "c69e2e6acc2e6ae990c71cbb1b9a4e7403b4087b"
-    uid = authenticate_odoo_user(odoo_url, db_name, username, password)
-    print(uid)
+    uid=2
+    # uid = authenticate_odoo_user(odoo_url, db_name, username, password)
+    # print(uid)
+    # version = get_odoo_version(odoo_url)
+    # print(version)
+    # common = execute_odoo_method(odoo_url, db_name, uid, password, 'account.move', 'check_access_rights', args=['read'], kwargs={'raise_exception': False})
+    # ids = execute_odoo_method(odoo_url, db_name, uid, password, 'account.move', 'search', args=[[]])
+    # print("ids", ids)
+    # read = execute_odoo_method(odoo_url, db_name, uid, password, 'account.move', 'read', [ids], {'fields': ['name', "invoice_partner_display_name", "date", "payment_state","state","auto_post","invoice_line_ids"]})
+    # print("read", read)
+    # fields = execute_odoo_method(odoo_url, db_name, uid, password, 'account.move' ,'fields_get',args=[[]], kwargs={'attributes': ['string', 'help', 'type']})
+    # print("fields", fields)
+    search_read= execute_odoo_method(odoo_url, db_name, uid, password, 'account.move', 'search_read', args=[[]], kwargs={'fields': ['name', "invoice_partner_display_name", "date", "payment_state","state","auto_post","invoice_line_ids"]})
+    print("search_read", search_read)
+    return HttpResponse(search_read)
