@@ -38,11 +38,11 @@ def sync_data_view(request):
     }
 
     # Create an invoice in the Odoo model 'account.move'
-    new_invoice_id = odoo.env['account.move'].create(invoice_data)
-    # Post the invoice
-    odoo.env['account.move'].browse(new_invoice_id).post()
-    # Print the ID of the newly created invoice
-    print("New invoice ID:", new_invoice_id)
+    # new_invoice_id = odoo.env['account.move'].create(invoice_data)
+    # # Post the invoice
+    # odoo.env['account.move'].browse(new_invoice_id).post()
+    # # Print the ID of the newly created invoice
+    # print("New invoice ID:", new_invoice_id)
 
     # invoice = odoo.env['account.move'].browse([0])
     # print(invoice)
@@ -52,9 +52,40 @@ def sync_data_view(request):
     #     # 'payment_state': 'paid',  # Update the payment state
     #     # Update other fields as needed
     # })
-    record_ids = odoo.env['account.move'].search([])
 
     # Read data for all records
+    record_ids = odoo.env['account.move'].search([])
+    print("record_ids", record_ids)
     odoo_model_data = odoo.env['account.move'].read(record_ids, ['name', "invoice_partner_display_name", "date", "payment_state","state","auto_post","invoice_line_ids"])
     print(odoo_model_data)
+    # Create the account move in the 'draft' state
+    transaction_data = {
+        'name': 'transaction name',
+        'invoice_partner_display_name': 'partner display name',
+        'date': '2023-01-01',
+        'payment_state': 'paid',
+        'state': 'draft',  # start in the 'draft' state
+        'invoice_line_ids': [(0, 0, {
+            'name': 'invoice line name',
+            'quantity': 1,
+            'price_unit': 100.0,
+            'account_id': 1,
+        })],
+    }
+
+    transaction_id = odoo.env['account.move'].create(transaction_data)
+    # Print out the transaction_id
+    print(f"transaction_id: {transaction_id}")
+
+    # Check if the record was created successfully
+    if not transaction_id:
+        print("Record creation failed")
+    else:
+        # Post the move (change its state to 'posted')
+        try:
+            move = odoo.env['account.move'].browse(transaction_id)
+            print(f"move: {move}")
+            move.action_post()
+        except Exception as e:
+            print(f"Failed to post the record: {e}")
     return HttpResponse("Data synchronized successfully!")
