@@ -98,6 +98,19 @@ def test_odoo_api_view(request):
     username = "fatima@softylus.com"
     password = "c69e2e6acc2e6ae990c71cbb1b9a4e7403b4087b"
     uid=2
+    transaction_data = {
+        'name': 'INV/2023/00099',
+        'invoice_partner_display_name': 'partner display name',
+        'date': '2023-05-24',
+        'payment_state': 'paid',
+        'state': 'draft',  # start in the 'draft' state
+        'invoice_line_ids': [(0, 0, {
+            'name': 'invoice line name',
+            'quantity': 1,
+            'price_unit': 100.0,
+            'account_id': 1,
+        })],
+    }
     # uid = authenticate_odoo_user(odoo_url, db_name, username, password)
     # print(uid)
     # version = get_odoo_version(odoo_url)
@@ -109,6 +122,15 @@ def test_odoo_api_view(request):
     # print("read", read)
     # fields = execute_odoo_method(odoo_url, db_name, uid, password, 'account.move' ,'fields_get',args=[[]], kwargs={'attributes': ['string', 'help', 'type']})
     # print("fields", fields)
-    search_read= execute_odoo_method(odoo_url, db_name, uid, password, 'account.move', 'search_read', args=[[]], kwargs={'fields': ['name', "invoice_partner_display_name", "date", "payment_state","state","auto_post","invoice_line_ids"]})
+    # create = execute_odoo_method(odoo_url, db_name, uid, password, 'account.move', 'create', args=[transaction_data])
+    # print("create", create)
+    search_read = execute_odoo_method(odoo_url, db_name, uid, password, 'account.move', 'search_read', args=[[]], kwargs={'fields': ['name', "invoice_partner_display_name", "date", "payment_state", "state", "auto_post", "invoice_line_ids"]})
     print("search_read", search_read)
     return HttpResponse(search_read)
+    # get_name = execute_odoo_method(odoo_url, db_name, uid, password, 'account.move', 'name_get', [[13]])
+    # print("get_name before", get_name)
+    # update = execute_odoo_method(odoo_url, db_name, uid, password, 'account.move', 'write', [[14], {'state': "draft"}])
+    # delete = execute_odoo_method(odoo_url, db_name, uid, password, 'account.move', 'unlink', [[1]]) # You cannot delete an item linked to a posted entry.
+    # get_name = execute_odoo_method(odoo_url, db_name, uid, password, 'account.move', 'name_get', [[13]])
+    # print("get_name after", get_name)
+    # return HttpResponse(uid)

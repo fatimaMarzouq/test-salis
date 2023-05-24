@@ -69,6 +69,7 @@ def execute_odoo_method(url, db, uid, password, model, method, args=None, kwargs
         "id": None
     }
     response = requests.post(endpoint, json=data)
+    print(response.json())
     if response.status_code == 200:
         try:
             result = response.json().get("result")
