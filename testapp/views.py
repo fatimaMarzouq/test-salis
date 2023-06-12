@@ -98,19 +98,23 @@ def test_odoo_api_view(request):
     username = "fatima@softylus.com"
     password = "c69e2e6acc2e6ae990c71cbb1b9a4e7403b4087b"
     uid=2
+    jornal = execute_odoo_method(odoo_url, db_name, uid, password, 'account.journal', 'search_read',
+                                 args=[[('code', "=", 'WT')]], kwargs={'fields': ['name', "type", "code"]})
     transaction_data = {
-        'name': 'INV/2023/00999',
-        'payment_reference': 'INV/2023/00999',
-        'partner_id': 1,  # ID of the customer/partner
-        'date': '2023-05-24',
-        'payment_state': 'paid',
-        'state': 'draft',  # start in the 'draft' state
+        'name': 'WT/2023/06/0002',
+        # 'payment_reference': 'WT/2023/06/0001',
+        # 'partner_id': 1,  # ID of the customer/partner
+        'date': '2023-06-12',
+        # 'payment_state': 'paid',
+        # 'state': 'draft',  # start in the 'draft' state
         'move_type': "out_invoice",  # important to display the record in the Odoo dashboard
-        'invoice_line_ids': [(0, 0, {
+        'journal_id': jornal[0]['id'],
+        # 'journal_id': 15,
+        'line_ids': [(0, 0, {
             'name': 'invoice line name',
-            'quantity': 1,
-            'price_unit': 100.0,
-            # 'account_id': 7,
+            'credit': 1,
+            'debit': 100.0,
+            'account_id':44,
         })],
     }
     # uid = authenticate_odoo_user(odoo_url, db_name, username, password)
@@ -124,12 +128,12 @@ def test_odoo_api_view(request):
     # print("read", read)
     # fields = execute_odoo_method(odoo_url, db_name, uid, password, 'account.move' ,'fields_get',args=[[]], kwargs={'attributes': ['string', 'help', 'type']})
     # print("fields", fields)
-    # create = execute_odoo_method(odoo_url, db_name, uid, password, 'account.move', 'create', args=[transaction_data])
+    create = execute_odoo_method(odoo_url, db_name, uid, password, 'account.move', 'create', args=[transaction_data])
     # created = execute_odoo_method(odoo_url, db_name, uid, password, 'account.invoice', 'create', args=[create], kwargs={'context': transaction_data})
     # print("create", create)
     # print("created", created)
-    search_read = execute_odoo_method(odoo_url, db_name, uid, password, 'account.move', 'search_read', args=[[]], kwargs={'fields': ['move_type', 'name', "invoice_partner_display_name", "date", "payment_state", "state", "auto_post", "invoice_line_ids"]})
-    print("search_read", search_read)
+    search_read = execute_odoo_method(odoo_url, db_name, uid, password, 'account.move', 'search_read', args=[[]], kwargs={'fields': ['move_type', 'journal_id', 'name', "invoice_partner_display_name", "date", "payment_state", "state", "auto_post", "invoice_line_ids"]})
+
     return HttpResponse(search_read)
     # get_name = execute_odoo_method(odoo_url, db_name, uid, password, 'account.move', 'name_get', [[13]])
     # print("get_name before", get_name)
