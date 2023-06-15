@@ -17,10 +17,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from testapp.views import sync_data_view, test_odoo_api_view
+from testapp.views import sync_data_view, test_odoo_api_view, test_odoo_upload_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('test/', sync_data_view),
     path('test-api/', test_odoo_api_view),
+    path('test-upload-image/', test_odoo_upload_view),
 ]
