@@ -157,18 +157,27 @@ def test_odoo_upload_view(request):
         image_data = file.read()
     # Encode image data using Base64
     encoded_image_data = base64.b64encode(image_data).decode('utf-8')
-    # Create the document
-    kwargs = {
-        # 'display_name': 'Vendor Image',  # Name of the document
-        'mimetype': 'image/jpeg',  # Mime type of the document (replace with the appropriate mime type)
-        'datas': encoded_image_data,  # Encoded image data
-        # 'datas_fname': 'image.jpg',  # File name of the image
-        'tag_ids': [(6, 0, 9)],  # IDs of the tags to assign (replace [tag_id] with the actual tag ID)
-        'partner_id': 8,  # ID of the folder to associate the document with (replace with the actual folder ID)
-        # 'res_field': 'partner_id',  # Field name that associates the document with the vendor record
-        # 'res_id': 8,  # ID of the vendor record
+
+    # Create the attachment
+    attachment_vals = {
+        # 'name': 'Vendor Image',
+        'datas': encoded_image_data,
+        'res_model': 'documents.document',
+        'type': 'binary',  # It's a binary file
     }
-    result = execute_odoo_method(odoo_url, db_name, uid, password, 'documents.document', 'create', kwargs=kwargs)
+    attachment_id = execute_odoo_method(odoo_url, db_name, uid, password, 'ir.attachment', 'create',
+                                        kwargs=attachment_vals)
+
+    # Now create the document
+    doc_vals = {
+        # 'name': 'Vendor Image',
+        # 'res_model': 'ir.attachment',
+        'res_id': attachment_id,
+        'tag_ids': [(6, 0, [9])],  # IDs of the tags to assign
+        'partner_id': 8,  # ID of the folder to associate the document with
+    }
+    result = execute_odoo_method(odoo_url, db_name, uid, password, 'documents.document', 'create', kwargs=doc_vals)
+
     # Get field information for the model
     fields_info = odoo.env['documents.document'].fields_get()
 
